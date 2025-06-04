@@ -12,12 +12,10 @@ import ru.practicum.exception.NotFoundException;
 import ru.practicum.exception.ValidationException;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
 public class StatsClient {
-	private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 	private final RestTemplate restTemplate;
 	private final String serverUrl;
 
