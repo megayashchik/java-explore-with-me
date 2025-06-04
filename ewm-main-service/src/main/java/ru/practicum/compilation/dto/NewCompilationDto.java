@@ -2,16 +2,24 @@ package ru.practicum.compilation.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
-import java.util.Set;
+import java.util.List;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class NewCompilationDto {
-	private Set<Long> events;
-	private Boolean pinned = false;
+	Long id;
 
-	@NotBlank(message = "Title cannot be blank")
-	@Size(min = 1, max = 50, message = "Title must be between 1 and 50 characters")
-	private String title;
+	List<Long> events;
+
+	Boolean pinned = false;
+
+	@Size(min = 1, max = 50)
+	@NotBlank
+	String title;
 }

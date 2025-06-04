@@ -1,17 +1,22 @@
 package ru.practicum.event.model;
 
-import jakarta.persistence.Embeddable;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
-@Embeddable
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "locations")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Location {
-	private Float lat;
-	private Float lon;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	Long id;
+
+	Float lat;
+
+	Float lon;
 }

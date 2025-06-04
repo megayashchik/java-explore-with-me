@@ -2,61 +2,58 @@ package ru.practicum.event.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import ru.practicum.category.model.Category;
 import ru.practicum.user.model.User;
 
 import java.time.LocalDateTime;
 
-
 @Entity
-@Table(name = "events")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "events")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Event {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	Long id;
 
-	private String annotation;
+	String annotation;
 
 	@ManyToOne
 	@JoinColumn(name = "category_id")
-	private Category category;
+	Category category;
 
-	@Column(name = "confirmed_requests")
-	private Long confirmedRequests = 0L;
+	Long confirmedRequests;
 
-	@Column(name = "created_on")
-	private LocalDateTime createdOn;
+	LocalDateTime createdOn;
 
-	private String description;
+	String description;
 
-	@Column(name = "event_date")
-	private LocalDateTime eventDate;
+	LocalDateTime eventDate;
 
 	@ManyToOne
 	@JoinColumn(name = "initiator_id")
-	private User initiator;
+	User initiator;
 
-	private Float lat;
-	private Float lon;
+	@ManyToOne
+	@JoinColumn(name = "location_id")
+	Location location;
 
-	private Boolean paid = false;
+	Boolean paid;
 
-	@Column(name = "participant_limit")
-	private Integer participantLimit = 0;
+	Integer participantLimit;
 
-	@Column(name = "published_on")
-	private LocalDateTime publishedOn;
+	LocalDateTime publishedOn;
 
-	@Column(name = "request_moderation")
-	private Boolean requestModeration = true;
+	Boolean requestModeration;
 
 	@Enumerated(EnumType.STRING)
-	private EventState state;
+	State state;
 
-	private String title;
+	String title;
 
-	@Transient
-	private Long views = 0L;
+	Long views;
 }

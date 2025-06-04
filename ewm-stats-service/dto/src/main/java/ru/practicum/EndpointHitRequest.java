@@ -1,6 +1,7 @@
 package ru.practicum;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,11 +15,15 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EndpointHitRequest {
-	Long id;
+	@NotNull
 	String app;
+
 	String uri;
+
+	@NotNull
 	String ip;
 
+	@NotNull
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	LocalDateTime timestamp;
 }

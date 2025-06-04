@@ -21,13 +21,13 @@ public class StatsClient {
 	private final RestTemplate restTemplate;
 	private final String serverUrl;
 
-	public StatsClient(@Value("${stats-server.url}") String serverUrl, RestTemplate rest) {
+	public StatsClient(@Value("${client.url}") String serverUrl, RestTemplate rest) {
 		this.restTemplate = rest;
 		this.serverUrl = serverUrl;
 	}
 
-	public ResponseEntity<List<ViewStatsResponse>> findStats(LocalDateTime start, LocalDateTime end,
-	                                                         List<String> uris, Boolean unique) {
+	public List<ViewStatsResponse> findStats(LocalDateTime start, LocalDateTime end,
+	                                         List<String> uris, Boolean unique) {
 		String uri = UriComponentsBuilder.fromHttpUrl(serverUrl)
 				.path("/stats")
 				.queryParam("start", start)
@@ -44,7 +44,8 @@ public class StatsClient {
 					new ParameterizedTypeReference<>() {
 					}
 			);
-			return response;
+
+			return response.getBody();
 		} catch (HttpClientErrorException e) {
 			if (e.getStatusCode().value() == 404) {
 				throw new NotFoundException("Статистика не найдена");

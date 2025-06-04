@@ -3,31 +3,38 @@ package ru.practicum.event.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+import ru.practicum.event.model.StateAction;
 
-import java.time.LocalDateTime;
-
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdateEventAdminRequest {
 	@Size(min = 20, max = 2000)
-	private String annotation;
-	private Long category;
+	String annotation;
+
+	Long category;
+
 	@Size(min = 20, max = 7000)
-	private String description;
+	String description;
+
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	private LocalDateTime eventDate;
-	private LocationDto location;
-	private Boolean paid;
+	String eventDate;
+
+	LocationDto location;
+
+	Boolean paid;
+
 	@PositiveOrZero
-	private Integer participantLimit;
-	private Boolean requestModeration;
-	private StateAction stateAction;
+	Integer participantLimit;
+
+	Boolean requestModeration;
+
+	StateAction stateAction;
+
 	@Size(min = 3, max = 120)
-	private String title;
-
-	public enum StateAction {
-		PUBLISH_EVENT,
-		REJECT_EVENT
-	}
+	String title;
 }
-

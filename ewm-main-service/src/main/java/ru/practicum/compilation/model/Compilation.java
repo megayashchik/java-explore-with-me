@@ -2,29 +2,30 @@ package ru.practicum.compilation.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import ru.practicum.event.model.Event;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Entity
-@Table(name = "compilations")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "compilations")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Compilation {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	Long id;
 
+	@JoinTable(name = "compilations_events",
+			joinColumns = @JoinColumn(name = "compilation_id", referencedColumnName = "id"),
+			inverseJoinColumns = @JoinColumn(name = "event_id", referencedColumnName = "id"))
 	@ManyToMany
-	@JoinTable(
-			name = "compilation_events",
-			joinColumns = @JoinColumn(name = "compilation_id"),
-			inverseJoinColumns = @JoinColumn(name = "event_id")
-	)
-	private Set<Event> events = new HashSet<>();
+	List<Event> events;
 
-	private Boolean pinned = false;
+	Boolean pinned;
 
-	private String title;
+	String title;
 }

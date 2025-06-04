@@ -1,37 +1,36 @@
 package ru.practicum.event.mapper;
 
-import org.mapstruct.*;
-import ru.practicum.category.mapper.CategoryMapper;
-import ru.practicum.event.dto.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
+import org.mapstruct.ReportingPolicy;
+import ru.practicum.category.model.Category;
+import ru.practicum.event.dto.EventFullDto;
+import ru.practicum.event.dto.EventShortDto;
+import ru.practicum.event.dto.NewEventDto;
 import ru.practicum.event.model.Event;
-import ru.practicum.user.mapper.UserMapper;
+import ru.practicum.user.model.User;
 
-@Mapper(componentModel = "spring", uses = {CategoryMapper.class, UserMapper.class})
+import java.util.List;
+
+@Mapper(
+		unmappedTargetPolicy = ReportingPolicy.IGNORE,
+		componentModel = MappingConstants.ComponentModel.SPRING
+)
 public interface EventMapper {
+	EventFullDto toFullDto(Event event);
 
-	@Mapping(target = "category", ignore = true)
-	@Mapping(target = "initiator", ignore = true)
-	@Mapping(target = "lat", source = "location.lat")
-	@Mapping(target = "lon", source = "location.lon")
-	Event toEvent(NewEventDto dto);
+	EventShortDto toShortDto(Event event);
 
-	@Mapping(target = "location.lat", source = "lat")
-	@Mapping(target = "location.lon", source = "lon")
-	EventFullDto toEventFullDto(Event event);
+	List<EventShortDto> toShortDto(List<Event> events);
 
-	EventShortDto toEventShortDto(Event event);
+	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "category", source = "categoryEntity")
+	@Mapping(target = "initiator", source = "initiator")
+	@Mapping(target = "eventDate", source = "dto.eventDate", dateFormat = "yyyy-MM-dd HH:mm:ss")
+	Event toEntity(NewEventDto dto, Category categoryEntity, User initiator);
 
-	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-	@Mapping(target = "category", ignore = true)
-	@Mapping(target = "state", ignore = true)
-	@Mapping(target = "lat", source = "location.lat")
-	@Mapping(target = "lon", source = "location.lon")
-	void updateEventFromUserRequest(UpdateEventUserRequest dto, @MappingTarget Event event);
-
-	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-	@Mapping(target = "category", ignore = true)
-	@Mapping(target = "state", ignore = true)
-	@Mapping(target = "lat", source = "location.lat")
-	@Mapping(target = "lon", source = "location.lon")
-	void updateEventFromAdminRequest(UpdateEventAdminRequest dto, @MappingTarget Event event);
+	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "eventDate", source = "dto.eventDate", dateFormat = "yyyy-MM-dd HH:mm:ss")
+	Event toEntity(EventFullDto dto);
 }
