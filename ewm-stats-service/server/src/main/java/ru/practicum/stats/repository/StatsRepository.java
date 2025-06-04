@@ -12,7 +12,6 @@ import java.util.List;
 
 @Repository
 public interface StatsRepository extends JpaRepository<EndpointHit, Long> {
-
 	@Query("SELECT new ru.practicum.ViewStatsResponse(e.app, e.uri, COUNT(DISTINCT e.ip)) " +
 			"FROM EndpointHit e " +
 			"WHERE e.timestamp BETWEEN :start AND :end " +
