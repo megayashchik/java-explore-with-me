@@ -3,6 +3,7 @@ package ru.practicum.stats.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.EndpointHitRequest;
 import ru.practicum.ViewStatsResponse;
@@ -18,6 +19,7 @@ public class StatsController {
 	private final StatsService statsService;
 
 	@PostMapping("/hit")
+	@ResponseStatus(HttpStatus.CREATED)
 	public void hit(@RequestBody @Valid EndpointHitRequest hit) {
 		statsService.saveHit(hit);
 	}
