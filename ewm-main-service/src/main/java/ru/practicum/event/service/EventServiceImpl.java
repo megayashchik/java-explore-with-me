@@ -144,6 +144,7 @@ public class EventServiceImpl implements EventService {
 		List<ViewStatsResponse> stats = statsClient.findStats(event.getPublishedOn(),
 				LocalDateTime.now(), List.of("/events/" + eventId), true);
 		log.info("Получена статистика просмотров события с id = {}: {} записей", eventId, stats.size());
+
 		Long views = stats.isEmpty() ? 0L : stats.getFirst().getHits();
 		event.setViews(views);
 		log.info("Установлено количество просмотров для события с id = {}: {}", eventId, views);
@@ -305,18 +306,22 @@ public class EventServiceImpl implements EventService {
 		return eventMapper.toFullDto(eventRepository.save(event));
 	}
 
-	private void hit(HttpServletRequest httpServletRequest) {
-		EndpointHitRequest hitRequest = new EndpointHitRequest(
-				"main-server",
-				httpServletRequest.getRequestURI(),
-				httpServletRequest.getRemoteAddr(),
+	private void hit(HttpServletRequest request) {
+		String uri = request.getRequestURI();
+
+		EndpointHitRequest hitDto = new EndpointHitRequest(
+				"ewm-service",
+				uri,
+				request.getRemoteAddr(),
 				LocalDateTime.now()
 		);
 
-		log.info("Отправляем статистику: {}", hitRequest);
-		statsClient.hit(hitRequest);
-		log.info("Статистика отправлена успешно");
+		log.info("Сохранение данных о просмотре: app={}, uri={}, ip={}",
+				"ewm-service", uri, request.getRemoteAddr());
+
+		statsClient.hit(hitDto);
 	}
+
 
 	private void checkEventUpdatePrivate(Event event, Long userId, Long eventId) {
 		if (!userRepository.existsById(userId)) {
