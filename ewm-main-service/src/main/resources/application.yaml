@@ -1,25 +1,24 @@
 spring:
   application:
-    name: ewm-stats-service
+    name: ewm-main-service
   sql:
     init:
       mode: always
   datasource:
-    username: stats
+    username: main
     schema: classpath:schema.sql
-    url: jdbc:postgresql://stats-db:5432/stats
+    url: jdbc:postgresql://ewm-db:5432/main
     driverClassName: org.postgresql.Driver
-    password: stats
+    password: main
   jpa:
     properties:
       hibernate:
-        format_sql: 'true'
+        format_sql:
     hibernate:
       ddl-auto: none
 
 server:
-  port: 9090
+  port: 8080
 
-logging:
-  level:
-    org.springframework.web.client.RestTemplate: DEBUG
+client:
+  url: http://stats-server:9090

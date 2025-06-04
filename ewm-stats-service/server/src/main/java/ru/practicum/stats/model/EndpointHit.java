@@ -1,19 +1,17 @@
 package ru.practicum.stats.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "hits")
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "hits")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EndpointHit {
 	@Id
@@ -29,6 +27,6 @@ public class EndpointHit {
 	@Column(nullable = false)
 	String ip;
 
-	@Column(nullable = false)
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	LocalDateTime timestamp;
 }
