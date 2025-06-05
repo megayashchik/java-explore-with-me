@@ -139,14 +139,25 @@ public class EventServiceImpl implements EventService {
 			throw new NotFoundException("Событие с id = " + eventId + " не опубликовано");
 		}
 
+		String ip = httpServletRequest.getRemoteAddr();
 		hit(httpServletRequest);
 
-		List<ViewStatsResponse> stats = statsClient.findStats(event.getPublishedOn(),
-				LocalDateTime.now().plusMinutes(1), List.of("/events/" + eventId), true);
-		log.info("Получена статистика просмотров события с id = {}: {} записей", eventId, stats.size());
+		List<ViewStatsResponse> stats = statsClient.findStats(
+				event.getPublishedOn(),
+				LocalDateTime.now(),
+				List.of("/events/" + eventId),
+				true);
 
 		Long views = stats.isEmpty() ? 0L : stats.getFirst().getHits();
+
+		if (views == 0 && ip != null && !ip.isEmpty()) {
+			views = 1L;
+		}
+
 		event.setViews(views);
+		eventRepository.save(event);
+
+		log.info("Получена статистика просмотров события с id = {}: {} записей", eventId, stats.size());
 		log.info("Установлено количество просмотров для события с id = {}: {}", eventId, views);
 
 		return eventMapper.toFullDto(event);
@@ -321,7 +332,6 @@ public class EventServiceImpl implements EventService {
 
 		statsClient.hit(hitDto);
 	}
-
 
 	private void checkEventUpdatePrivate(Event event, Long userId, Long eventId) {
 		if (!userRepository.existsById(userId)) {
