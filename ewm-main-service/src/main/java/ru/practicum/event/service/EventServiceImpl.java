@@ -142,7 +142,7 @@ public class EventServiceImpl implements EventService {
 		hit(httpServletRequest);
 
 		List<ViewStatsResponse> stats = statsClient.findStats(event.getPublishedOn(),
-				LocalDateTime.now(), List.of("/events/" + eventId), true);
+				LocalDateTime.now().plusMinutes(1), List.of("/events/" + eventId), true);
 		log.info("Получена статистика просмотров события с id = {}: {} записей", eventId, stats.size());
 
 		Long views = stats.isEmpty() ? 0L : stats.getFirst().getHits();

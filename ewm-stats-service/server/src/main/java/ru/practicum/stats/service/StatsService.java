@@ -24,7 +24,7 @@ public class StatsService {
 
 	public void saveHit(EndpointHitRequest hit) {
 		log.debug("Сохранение информации о просмотре: {}", hit);
-		statsRepository.saveAndFlush(endpointHitMapper.mapDtoToEntity(hit));
+		statsRepository.save(endpointHitMapper.mapDtoToEntity(hit));
 	}
 
 	@Transactional(readOnly = true)
