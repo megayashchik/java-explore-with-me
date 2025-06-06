@@ -39,7 +39,7 @@ public class PublicEventController {
 	}
 
 	@GetMapping("/{eventId}")
-	public EventFullDto findEventByIdPublic(@PathVariable Long eventId, HttpServletRequest httpServletRequest) {
-		return eventService.findEventByIdPublic(eventId, httpServletRequest);
+	public EventFullDto findEventPublic (@PathVariable Long eventId, HttpServletRequest httpServletRequest) {
+		return eventService.findEventPublic (eventId, httpServletRequest);
 	}
 }

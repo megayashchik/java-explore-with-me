@@ -13,14 +13,14 @@ public interface EventService {
 
 	EventFullDto updateEventPrivate(Long userId, Long eventId, UpdateEventUserRequest dto);
 
-	EventFullDto findEventByIdPublic(Long eventId, HttpServletRequest httpServletRequest);
+	EventFullDto findEventPublic(Long eventId, HttpServletRequest httpServletRequest);
 
-	EventFullDto findEventByUserPrivate(Long userId, Long eventId);
+	EventFullDto findEventPrivate(Long userId, Long eventId);
 
 	List<ParticipationRequestDto> findEventRequestsPrivate(Long userId, Long eventId);
 
-	EventRequestStatusUpdateResult updateEventRequestPrivate(Long userId, Long eventId,
-	                                                         EventRequestStatusUpdateRequest dto);
+	EventRequestStatusUpdateResult updateEventRequestStatusPrivate(Long userId, Long eventId,
+	                                                               EventRequestStatusUpdateRequest dto);
 
 	EventFullDto updateEventAdmin(Long eventId, UpdateEventAdminRequest dto);
 
@@ -31,7 +31,7 @@ public interface EventService {
 
 	List<EventShortDto> findEventsPrivate(Long userId, Integer from, Integer size);
 
-	List<EventFullDto> findAdminEvents(List<Integer> users, List<State> states,
+	List<EventFullDto> findEventsAdmin(List<Integer> users, List<State> states,
 	                                   List<Integer> categories,
 	                                   LocalDateTime rangeStart,
 	                                   LocalDateTime rangeEnd,

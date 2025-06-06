@@ -19,7 +19,7 @@ public class AdminEventController {
 	private final EventService eventService;
 
 	@GetMapping
-	public List<EventFullDto> findAdminEvents(@RequestParam(required = false) List<Integer> users,
+	public List<EventFullDto> findEventsAdmin(@RequestParam(required = false) List<Integer> users,
 	                                          @RequestParam(required = false) List<State> states,
 	                                          @RequestParam(required = false) List<Integer> categories,
 	                                          @RequestParam(required = false)
@@ -30,7 +30,7 @@ public class AdminEventController {
 	                                          LocalDateTime rangeEnd,
 	                                          @RequestParam(defaultValue = "0") Integer from,
 	                                          @RequestParam(defaultValue = "10") Integer size) {
-		return eventService.findAdminEvents(users, states, categories, rangeStart, rangeEnd, from, size);
+		return eventService.findEventsAdmin(users, states, categories, rangeStart, rangeEnd, from, size);
 	}
 
 	@PatchMapping("/{eventId}")
