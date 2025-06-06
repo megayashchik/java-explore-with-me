@@ -271,7 +271,8 @@ public class EventServiceImpl implements EventService {
 				throw new InvalidResourceStateException("Статус заявки не в состоянии ожидания");
 			}
 
-			if (event.getConfirmedRequests() < event.getParticipantLimit() && dto.getStatus() == RequestStatus.CONFIRMED) {
+			if (event.getConfirmedRequests() < event.getParticipantLimit()
+					&& dto.getStatus() == RequestStatus.CONFIRMED) {
 				request.setStatus(RequestStatus.CONFIRMED);
 				confirmedRequests.add(request);
 				event.setConfirmedRequests(event.getConfirmedRequests() + 1);
@@ -340,7 +341,8 @@ public class EventServiceImpl implements EventService {
 		findUserById(userId);
 
 		if (!Objects.equals(event.getInitiator().getId(), userId)) {
-			throw new ValidationException("Пользователь с id = " + userId + " не является создателем события " + eventId);
+			throw new ValidationException("Пользователь с id = " + userId +
+					" не является создателем события " + eventId);
 		}
 
 		if (event.getState() == State.PUBLISHED) {
