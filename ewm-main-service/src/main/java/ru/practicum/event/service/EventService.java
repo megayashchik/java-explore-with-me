@@ -27,7 +27,8 @@ public interface EventService {
 	List<EventShortDto> findEventsPublic(String text, List<Integer> categories,
 	                                     Boolean paid, LocalDateTime rangeStart,
 	                                     LocalDateTime rangeEnd, Boolean onlyAvailable,
-	                                     String sort, Integer from, Integer size, HttpServletRequest httpServletRequest);
+	                                     String sort, Integer from, Integer size,
+	                                     HttpServletRequest httpServletRequest);
 
 	List<EventShortDto> findEventsPrivate(Long userId, Integer from, Integer size);
 

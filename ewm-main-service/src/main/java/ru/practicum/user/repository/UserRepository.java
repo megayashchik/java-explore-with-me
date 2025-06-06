@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    Page<User> findByIdIn(List<Integer> ids, Pageable pageable);
+	Page<User> findByIdIn(List<Integer> ids, Pageable pageable);
 
-    boolean existsByEmail(String email);
+	boolean existsByEmail(String email);
 }
