@@ -109,7 +109,7 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public List<EventFullDto> findAdminEvents(List<Integer> users, List<State> states, List<Integer> categories,
+	public List<EventFullDto> findEventsAdmin(List<Integer> users, List<State> states, List<Integer> categories,
 	                                          LocalDateTime rangeStart, LocalDateTime rangeEnd,
 	                                          Integer from, Integer size) {
 		log.info("Административный поиск событий: users = {}, states = {}, categories = {}, " +
@@ -129,11 +129,10 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public EventFullDto findEventByIdPublic(Long eventId, HttpServletRequest httpServletRequest) {
+	public EventFullDto findEventPublic(Long eventId, HttpServletRequest httpServletRequest) {
 		log.info("Публичный запрос события с id = {}", eventId);
 
-		Event event = eventRepository.findById(eventId).orElseThrow(() ->
-				new NotFoundException("Событие с id = " + eventId + " не найдено"));
+		Event event = findEventById(eventId);
 
 		if (event.getState() != State.PUBLISHED) {
 			throw new NotFoundException("Событие с id = " + eventId + " не опубликовано");
@@ -175,8 +174,7 @@ public class EventServiceImpl implements EventService {
 		Category category = categoryRepository.findById(dto.getCategory())
 				.orElseThrow(() -> new NotFoundException("Категория " + dto.getCategory() + " не найдена"));
 
-		User user = userRepository.findById(userId)
-				.orElseThrow(() -> new NotFoundException("Пользователь с id = " + userId + " не найден"));
+		User user = findUserById(userId);
 
 		Location location = locationRepository.save(locationMapper.toEntity(dto.getLocation()));
 
@@ -193,7 +191,7 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public EventFullDto findEventByUserPrivate(Long userId, Long eventId) {
+	public EventFullDto findEventPrivate(Long userId, Long eventId) {
 		log.info("Запрос события с id = {} пользователем с id = {}", eventId, userId);
 
 		Optional<Event> event = eventRepository.findByInitiatorIdAndId(userId, eventId);
@@ -201,6 +199,7 @@ public class EventServiceImpl implements EventService {
 		if (event.isEmpty()) {
 			throw new NotFoundException("Событие с id = " + eventId + " не найдено");
 		}
+
 		log.info("Успешно найдено событие id = {} для пользователя id = {}", eventId, userId);
 
 		return eventMapper.toFullDto(event.get());
@@ -210,8 +209,7 @@ public class EventServiceImpl implements EventService {
 	public EventFullDto updateEventPrivate(Long userId, Long eventId, UpdateEventUserRequest dto) {
 		log.info("Private: Обновление события id = {} пользователем id = {}", eventId, userId);
 
-		Event event = eventRepository.findById(eventId).orElseThrow(() ->
-				new NotFoundException("Событие с id = " + eventId + " не найдено."));
+		Event event = findEventById(eventId);
 
 		checkEventUpdatePrivate(event, userId, eventId);
 
@@ -237,12 +235,9 @@ public class EventServiceImpl implements EventService {
 	public List<ParticipationRequestDto> findEventRequestsPrivate(Long userId, Long eventId) {
 		log.info("Запрос заявок на участие в событии с id = {} пользователем с id = {}", eventId, userId);
 
-		if (!userRepository.existsById(userId)) {
-			throw new NotFoundException("Пользователь с id = " + userId + " не существует");
-		}
+		findUserById(userId);
 
-		Event event = eventRepository.findById(eventId).orElseThrow(() ->
-				new NotFoundException("Событие с id = " + eventId + " не найдено."));
+		Event event = findEventById(eventId);
 
 		if (!Objects.equals(event.getInitiator().getId(), userId)) {
 			throw new ValidationException("Пользователь с id = " + userId +
@@ -258,13 +253,12 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public EventRequestStatusUpdateResult updateEventRequestPrivate(Long userId, Long eventId,
-	                                                                EventRequestStatusUpdateRequest dto) {
+	public EventRequestStatusUpdateResult updateEventRequestStatusPrivate(Long userId, Long eventId,
+	                                                                      EventRequestStatusUpdateRequest dto) {
 		log.info("Обновление статуса заявок для события с id = {} пользователем с id = {}, статус = {}, заявки: {}",
 				eventId, userId, dto.getStatus(), dto.getRequestIds());
 
-		Event event = eventRepository.findById(eventId).orElseThrow(() ->
-				new NotFoundException("Событие с id = " + eventId + " не найдено."));
+		Event event = findEventById(eventId);
 
 		checkUpdateEventRequestPrivate(event, userId, eventId, dto);
 
@@ -308,13 +302,22 @@ public class EventServiceImpl implements EventService {
 	public EventFullDto updateEventAdmin(Long eventId, UpdateEventAdminRequest dto) {
 		log.info("Admin: Обновление события с id = {}", eventId);
 
-		Event event = eventRepository.findById(eventId).orElseThrow(() ->
-				new NotFoundException("Событие с id = " + eventId + " не найдено."));
+		Event event = findEventById(eventId);
 
 		event = UpdateEventMapper.updateEventAdmin(event, dto, categoryRepository, locationRepository, locationMapper);
 		log.info("Событие id = {} успешно обновлено администратором", eventId);
 
 		return eventMapper.toFullDto(eventRepository.save(event));
+	}
+
+	private User findUserById(Long userId) {
+		return userRepository.findById(userId).orElseThrow(() ->
+				new NotFoundException("Пользователь с id = " + userId + " не существует"));
+	}
+
+	private Event findEventById(Long eventId) {
+		return eventRepository.findById(eventId).orElseThrow(() ->
+				new NotFoundException("Событие с id = " + eventId + " не найдено"));
 	}
 
 	private void hit(HttpServletRequest request) {
@@ -334,9 +337,7 @@ public class EventServiceImpl implements EventService {
 	}
 
 	private void checkEventUpdatePrivate(Event event, Long userId, Long eventId) {
-		if (!userRepository.existsById(userId)) {
-			throw new NotFoundException("Пользователь с id = " + userId + " не существует");
-		}
+		findUserById(userId);
 
 		if (!Objects.equals(event.getInitiator().getId(), userId)) {
 			throw new ValidationException("Пользователь с id = " + userId + " не является создателем события " + eventId);
@@ -354,9 +355,7 @@ public class EventServiceImpl implements EventService {
 
 	private void checkUpdateEventRequestPrivate(Event event, Long userId, Long eventId,
 	                                            EventRequestStatusUpdateRequest dto) {
-		if (!userRepository.existsById(userId)) {
-			throw new NotFoundException("Пользователь с id = " + userId + " не существует");
-		}
+		findUserById(userId);
 
 		if (!Objects.equals(event.getInitiator().getId(), userId)) {
 			throw new ValidationException("Пользователь с id = " + userId +
