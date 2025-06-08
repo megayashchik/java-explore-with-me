@@ -37,4 +37,10 @@ public class ErrorHandler {
 		return new ResponseEntity<>(new ErrorResponse("Нарушение ограничения", e.getMessage()),
 				HttpStatus.CONFLICT);
 	}
+
+	@ExceptionHandler(DuplicateRatingException.class)
+	public ResponseEntity<ErrorResponse> handleDuplicateRatingException(DuplicateRatingException e) {
+		return new ResponseEntity<>(new ErrorResponse("Оценка уже существует", e.getMessage()),
+				HttpStatus.CONFLICT);
+	}
 }

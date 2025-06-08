@@ -32,4 +32,8 @@ public class EventShortDto {
 	String title;
 
 	Long views;
+
+	Long likes;
+
+	Long dislikes;
 }

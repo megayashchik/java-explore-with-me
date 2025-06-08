@@ -21,6 +21,7 @@ import ru.practicum.event.model.Event;
 import ru.practicum.event.model.EventSort;
 import ru.practicum.event.model.Location;
 import ru.practicum.event.model.State;
+import ru.practicum.event.rating.service.RatingService;
 import ru.practicum.event.repository.EventRepository;
 import ru.practicum.event.repository.LocationRepository;
 import ru.practicum.event.service.specification.DbSpecifications;
@@ -56,6 +57,7 @@ public class EventServiceImpl implements EventService {
 	private final EventMapper eventMapper;
 	private final LocationMapper locationMapper;
 	private final StatsClient statsClient;
+	private final RatingService ratingService;
 
 	@Override
 	public List<EventShortDto> findEventsPrivate(Long userId, Integer from, Integer size) {
@@ -104,8 +106,7 @@ public class EventServiceImpl implements EventService {
 		List<Event> events = eventRepository.findAll(spec, pageable).getContent();
 		log.info("Найдено {} событий по публичному запросу", events.size());
 
-		return eventMapper.toShortDto(events);
-
+		return eventMapper.toShortDtoWithRatings(events, ratingService);
 	}
 
 	@Override
