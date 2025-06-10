@@ -19,9 +19,10 @@ public class PublicCompilationController {
 	}
 
 	@GetMapping
-	public List<CompilationDto> findCompilations(@RequestParam(defaultValue = "false") Boolean pinned,
-	                                             @RequestParam(defaultValue = "0") Integer from,
-	                                             @RequestParam(defaultValue = "10") Integer size) {
+	public List<CompilationDto> findCompilations(
+			@RequestParam(defaultValue = "false") Boolean pinned,
+			@RequestParam(defaultValue = "0") Integer from,
+			@RequestParam(defaultValue = "10") Integer size) {
 		return compilationService.findCompilations(pinned, from, size);
 	}
 }
