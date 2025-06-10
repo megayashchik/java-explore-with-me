@@ -38,8 +38,8 @@ public class ErrorHandler {
 				HttpStatus.CONFLICT);
 	}
 
-	@ExceptionHandler(ForbiddenException .class)
-	public ResponseEntity<ErrorResponse> handlerForbiddenException (ForbiddenException  e) {
+	@ExceptionHandler(ForbiddenException.class)
+	public ResponseEntity<ErrorResponse> handlerForbiddenException(ForbiddenException e) {
 		return new ResponseEntity<>(new ErrorResponse("Доступ запрещен", e.getMessage()), HttpStatus.FORBIDDEN);
 	}
 }
