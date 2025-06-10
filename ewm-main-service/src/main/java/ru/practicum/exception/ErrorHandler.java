@@ -37,4 +37,9 @@ public class ErrorHandler {
 		return new ResponseEntity<>(new ErrorResponse("Нарушение ограничения", e.getMessage()),
 				HttpStatus.CONFLICT);
 	}
+
+	@ExceptionHandler(ForbiddenException .class)
+	public ResponseEntity<ErrorResponse> handlerForbiddenException (ForbiddenException  e) {
+		return new ResponseEntity<>(new ErrorResponse("Доступ запрещен", e.getMessage()), HttpStatus.FORBIDDEN);
+	}
 }
